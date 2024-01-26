@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:inventaire_exo_muscu/models/meal.dart';
+import 'package:inventaire_exo_muscu/screens/meals_description.dart';
+import 'package:inventaire_exo_muscu/widgets/appbar.dart';
 import 'package:inventaire_exo_muscu/widgets/meals_item.dart';
+import 'package:inventaire_exo_muscu/widgets/responsive_body.dart';
 
 class MealsScreen extends StatelessWidget {
   const MealsScreen({
     super.key,
-    required this.title,
+    this.title,
     required this.meals,
+    required this.onToggleFavotite,
   });
 
-  final String title;
+  final String? title;
   final List<Meal> meals;
+  final void Function(Meal meal) onToggleFavotite;
+
+  void onSelectMeal(BuildContext context, Meal meals) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx) => MealsDescriptionScreen(
+              meal: meals,
+              onToggleFavotite: onToggleFavotite,
+            )));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +32,9 @@ class MealsScreen extends StatelessWidget {
         itemBuilder: (ctx, index) {
           return MealsItems(
             meal: meals[index],
+            onSelectMeal: (meal) {
+              onSelectMeal(context, meal);
+            },
           );
         });
     if (meals.isEmpty) {
@@ -41,9 +57,15 @@ class MealsScreen extends StatelessWidget {
         ),
       );
     }
+
+    if (title == null) {
+      return content;
+    }
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: content,
+      appBar: CustomAppBar(title: title!),
+      body: ResponsiveBody(
+        child: content,
+      ),
     );
   }
 }

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+
 import 'package:inventaire_exo_muscu/data/dummy_data.dart';
-import 'package:inventaire_exo_muscu/generated/l10n.dart';
 import 'package:inventaire_exo_muscu/models/category.dart';
+import 'package:inventaire_exo_muscu/models/meal.dart';
 import 'package:inventaire_exo_muscu/screens/meals.dart';
 import 'package:inventaire_exo_muscu/widgets/category_grid_item.dart';
-import 'package:inventaire_exo_muscu/widgets/drawer.dart';
+import 'package:inventaire_exo_muscu/widgets/responsive_body.dart';
 
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key});
+  const CategoriesScreen({super.key, required this.onToggleFavotite});
+
+  final void Function(Meal meal) onToggleFavotite;
 
   void _selectCategory(BuildContext context, Category category) {
     final mealsCat = dummyMeals
@@ -18,6 +21,7 @@ class CategoriesScreen extends StatelessWidget {
         builder: (ctx) => MealsScreen(
           title: category.title,
           meals: mealsCat,
+          onToggleFavotite: onToggleFavotite,
         ),
       ),
     );
@@ -25,9 +29,8 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).title)),
-      body: GridView(
+    return ResponsiveBody(
+      child: GridView(
         padding: const EdgeInsets.all(24),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -48,7 +51,6 @@ class CategoriesScreen extends StatelessWidget {
             )
         ],
       ),
-      drawer: const CustomDrawer(),
     );
   }
 }
